@@ -1361,13 +1361,13 @@ class GeneticOptimization(OptimizationBase):
                     if date == first_date and cycle < appliance.completed_cycles:
                         continue
                     by_date.setdefault(date, {}).setdefault(cycle, []).append(slot)
-                if skip_planned_days and self.appliance_layout is not None:
-                        planned = {
-                                gene.run_date
-                                     for gene in self.appliance_layout.genes
-                                 if gene.device_id == appliance.device_id
-                        }
-                    by_date = {d: c for d, c in by_date.items() if d not in planned}
+            if skip_planned_days and self.appliance_layout is not None:
+                planned = {
+                    gene.run_date
+                    for gene in self.appliance_layout.genes
+                    if gene.device_id == appliance.device_id
+                }
+                by_date = {d: c for d, c in by_date.items() if d not in planned}
             gap_slots = appliance.run_slots + math.ceil(
                 appliance.min_cycle_gap_h / self.slot_duration_h
             )
@@ -2433,7 +2433,7 @@ class GeneticOptimization(OptimizationBase):
         # Add one appliance start gene per scheduled run (index into that run's
         # allowed_start_slots). No draws happen when there are no appliances, so
         # the battery/EV-only genome is unchanged.
-            for gene in self.appliance_layout.genes:
+        for gene in self.appliance_layout.genes:
             individual_components.append(random.randint(0, len(gene.allowed_start_slots) - 1))  # noqa: S311
 
         return creator.Individual(individual_components)
@@ -2635,7 +2635,7 @@ class GeneticOptimization(OptimizationBase):
         pv = np.asarray(self.simulation.pv_prediction_wh, dtype=float)
         load = np.asarray(self.simulation.load_energy_array, dtype=float)
         genes: list[int] = []
-            for gene in self.appliance_layout.genes:
+        for gene in self.appliance_layout.genes:
 
             def opportunity_cost(position: int) -> float:
                 slot = gene.allowed_start_slots[position]
